@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,6 +18,15 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     return res
       .status(401)
       .json({ error: true, message: "All fields are required to proceed." });
+  }
+
+  const userExist = await User.findOne({ email });
+
+  if (userExist) {
+    return res.status(401).json({
+      error: true,
+      message: "Username already registered, please try a different one.",
+    });
   }
 
   // password match validation
@@ -68,9 +78,22 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       .json({ error: true, message: "Incorrect password." });
   }
 
-  res
-    .status(200)
-    .json({ success: true, message: "Login sucess", token: "token" });
+  const accessToken = jwt.sign(
+    { userEmail: userExist.email },
+    process.env.ACCESS_TOKEN_SECRET!,
+    { expiresIn: "5m" }
+  );
+
+  // wag muna natin lagyan ng refresh. access token lang muna, like eds?
+  //   const refreshToken = jwt.sign(
+  //     { userEmail: userExist.email },
+  //     process.env.REFRESH_TOKEN_SECRET!,
+  //     { expiresIn: "7d" }
+  //   );
+
+  res.json({ success: true, message: "Login sucess", accessToken });
 };
+
+// const refresh = (req,res,next) => {}
 
 export { register, login };
