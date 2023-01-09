@@ -31,7 +31,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = jwt.sign(
     { userEmail: userExist.email, userId: userExist._id },
     process.env.ACCESS_TOKEN_SECRET!,
-    { expiresIn: "30m" }
+    { expiresIn: "7d" }
   );
 
   // wag muna natin lagyan ng refresh. access token lang muna, like eds?

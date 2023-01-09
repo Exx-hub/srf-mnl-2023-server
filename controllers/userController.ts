@@ -5,17 +5,19 @@ import Course from "../models/Course";
 
 const getUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
-  console.log(req.headers);
 
   if (!userId || userId === "null") {
     console.log("no userid!");
     return res
       .status(422)
-      .json({ error: true, message: "Unprocessable entityt" });
+      .json({ error: true, message: "Unprocessable entity" });
   }
 
-  const foundUser = await User.findById(userId).select("-password");
+  const foundUser = await User.findById(userId)
+    .select("-password")
+    .populate("courses", "title"); // transforms saved courseIds into course object but show title only
 
+  console.log(foundUser);
   if (!foundUser) {
     return res.status(404).json({ message: "User not found." });
   }
