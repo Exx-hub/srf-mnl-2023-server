@@ -1,12 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { ObjectId, Types } from "mongoose";
 
 // const {Schema, model} = mongoose;
-
-export interface IUserCourse {
-  courseId: string;
-  enrolledOn: Date;
-  status: string;
-}
 
 export interface IUser {
   firstname: string;
@@ -14,7 +8,7 @@ export interface IUser {
   mobile: string;
   email: string;
   password: string;
-  courses: IUserCourse[]; // research on this
+  courses: Types.ObjectId[];
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -25,15 +19,21 @@ const userSchema = new mongoose.Schema<IUser>({
   password: { type: String, required: true },
   courses: [
     {
-      courseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
-        required: true,
-      },
-      enrolledOn: { type: Date, default: new Date() },
-      status: { type: String, default: "active" },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
     },
   ],
 });
 
 export default mongoose.model<IUser>("User", userSchema);
+
+// courses: [
+//   {
+//     courseId: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "Course",
+//     },
+//     enrolledOn: { type: Date, default: new Date() },
+//     status: { type: String, default: "active" },
+//   },
+// ],

@@ -24,7 +24,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
       process.env.ACCESS_TOKEN_SECRET as string
     ) as JwtPayload;
 
-    req.user = decoded.userEmail;
+    req.user = decoded; // decoded = {userEmail, userId}
     next();
   } catch (err: any) {
     console.log(err.message);

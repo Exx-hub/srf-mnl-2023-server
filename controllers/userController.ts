@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User";
+import Course from "../models/Course";
 
 const getUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
@@ -73,4 +74,38 @@ const register = async (req: Request, res: Response) => {
   res.status(201).json({ success: true, message: "new user created!" });
 };
 
-export { getUserById, register };
+const enrollCourse = async (req: Request, res: Response) => {
+  const courseId = req.body.courseId;
+  const userId = req.user.userId;
+
+  try {
+    const userEnrollee = await User.findById(userId);
+
+    if (!userEnrollee) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const courseToEnroll = await Course.findById(courseId);
+
+    if (!courseToEnroll) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const duplicateCourse = userEnrollee.courses.includes(courseToEnroll._id);
+
+    if (duplicateCourse) {
+      return res.status(400).json({ message: "Course already enrolled." });
+    }
+
+    userEnrollee?.courses.push(courseToEnroll._id);
+
+    await userEnrollee?.save();
+
+    res.json({ success: true, message: "add course success" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export { getUserById, register, enrollCourse };
