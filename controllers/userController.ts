@@ -7,7 +7,6 @@ const getUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   if (!userId || userId === "null") {
-    console.log("no userid!");
     return res
       .status(422)
       .json({ error: true, message: "Unprocessable entity" });
@@ -17,7 +16,6 @@ const getUserById = async (req: Request, res: Response) => {
     .select("-password")
     .populate("courses", "title"); // transforms saved courseIds into course object but show title only
 
-  console.log(foundUser);
   if (!foundUser) {
     return res.status(404).json({ message: "User not found." });
   }
@@ -45,7 +43,7 @@ const register = async (req: Request, res: Response) => {
   const userExist = await User.findOne({ email });
 
   if (userExist) {
-    return res.status(401).json({
+    return res.status(403).json({
       error: true,
       message: "Username already registered, please try a different one.",
     });
