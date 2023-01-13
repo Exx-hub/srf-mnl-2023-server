@@ -22,6 +22,10 @@ app.use(authRoutes);
 app.use(userRoutes);
 app.use(courseRoutes);
 
+app.get("/", (_req: Request, res: Response) => {
+  return res.send("Express Typescript on Vercel");
+});
+
 // add catch all error route here
 
 const db = mongoose.connection;

@@ -20,6 +20,9 @@ app.use((0, cors_1.default)(corsOptions_1.default));
 app.use(authRoutes_1.default);
 app.use(userRoutes_1.default);
 app.use(courseRoutes_1.default);
+app.get("/", (_req, res) => {
+    return res.send("Express Typescript on Vercel");
+});
 // add catch all error route here
 const db = mongoose_1.default.connection;
 db.once("open", () => {
