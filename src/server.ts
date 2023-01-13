@@ -2,18 +2,17 @@ import express, { Request, Response, Express } from "express";
 import "dotenv/config";
 import cors from "cors";
 import mongoose from "mongoose";
-import authRoutes from "../routes/authRoutes";
-import userRoutes from "../routes/userRoutes";
-import courseRoutes from "../routes/courseRoutes";
-import connectDB from "../config/connectDB";
-import corsOptions from "../config/corsOptions";
-import verifyJWT from "../middleware/verifyJWT";
+import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes";
+import courseRoutes from "./routes/courseRoutes";
+import connectDB from "./config/connectDB";
+import corsOptions from "./config/corsOptions";
 
 connectDB();
 
 const PORT = process.env.PORT;
 
-const app = express();
+const app: Express = express();
 
 app.use(express.json());
 app.use(cors(corsOptions));
